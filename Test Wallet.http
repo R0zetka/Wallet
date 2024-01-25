@@ -1,0 +1,20 @@
+POST http://localhost:8000/api/v1/wallet/22701f18-069b-4dc6-aef1-ba05c6d302c2/send
+Content-Type: application/json
+
+{
+  "to": "6b946ec7-fd02-4aa9-8696-2e74e809352d",
+  "amount": 10
+}
+
+###
+GET http://localhost:8000/api/v1/wallet/6b946ec7-fd02-4aa9-8696-2e74e809352d/history
+
+
+###
+GET http://localhost:8000/api/v1/wallet/6b946ec7-fd02-4aa9-8696-2e74e809352d
+
+
+###
+POST http://localhost:8000/api/v1/wallet
+
+

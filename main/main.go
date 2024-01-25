@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 	uuid "github.com/satori/go.uuid"
@@ -19,9 +18,9 @@ type Wallet struct {
 
 type Transaction struct {
 	ID     string    `json:"id"`
-	Time   time.Time `json:"time"`
-	From   string    `json:"from"`
-	To     string    `json:"to"`
+	Time   time.Time `json:"timetransaction"`
+	From   string    `json:"fromwallet"`
+	To     string    `json:"towallet"`
 	Amount int       `json:"amount"`
 }
 
@@ -85,8 +84,7 @@ func sendMoney(w http.ResponseWriter, r *http.Request) {
 				db.QueryRow("UPDATE wallet SET balance = $1 WHERE id = $2", balansFor, transaction.From)
 				db.QueryRow("UPDATE wallet SET balance = $1 WHERE id = $2", balansTo, transaction.To)
 				transaction.Time = time.Now()
-				fmt.Println(transaction.To, transaction.From, transaction.Amount, transaction.Time)
-				_, err := db.Exec("INSERT INTO transferhistory (time, fromwallet, towallet, amount) VALUES ($1, $2, $3, $4)", transaction.Time, uuid.FromStringOrNil(transaction.From), uuid.FromStringOrNil(transaction.To), transaction.Amount)
+				_, err := db.Query("INSERT INTO transferhistory (timetransaction, fromwallet, towallet, amount) VALUES ($1, $2, $3, $4)", transaction.Time, uuid.FromStringOrNil(transaction.From), uuid.FromStringOrNil(transaction.To), transaction.Amount)
 				if err != nil {
 					log.Fatal(err)
 				}
