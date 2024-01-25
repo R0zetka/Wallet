@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Walet/model"
 	"database/sql"
 	"encoding/json"
 	"github.com/gorilla/mux"
@@ -10,19 +11,6 @@ import (
 	"net/http"
 	"time"
 )
-
-type Wallet struct {
-	ID      string `json:"id"`
-	Balance int    `json:"balance"`
-}
-
-type Transaction struct {
-	ID     string    `json:"id"`
-	Time   time.Time `json:"timetransaction"`
-	From   string    `json:"fromwallet"`
-	To     string    `json:"towallet"`
-	Amount int       `json:"amount"`
-}
 
 var db *sql.DB
 
@@ -68,7 +56,7 @@ func sendMoney(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	params := mux.Vars(r)
 	walletID := uuid.FromStringOrNil(params["walletId"])
-	var transaction Transaction
+	var transaction model.Transaction
 	_ = json.NewDecoder(r.Body).Decode(&transaction)
 
 	walletFor, statusFor := serchWallet(walletID)
@@ -124,9 +112,9 @@ func transactionHistory(w http.ResponseWriter, r *http.Request) {
 	walletID := uuid.FromStringOrNil(params["walletId"])
 	wallet, status := serchWallet(walletID)
 	if status == http.StatusOK {
-		var trans Transaction
+		var trans model.Transaction
 		rows, _ := db.Query("SELECT timetransaction, id,fromwallet,towallet,amount FROM transferhistory ")
-		transactions := make([]Transaction, 0)
+		transactions := make([]model.Transaction, 0)
 
 		for rows.Next() {
 			rows.Scan(&trans.Time, &trans.ID, &trans.From, &trans.To, &trans.Amount)
@@ -147,8 +135,8 @@ func transactionHistory(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func serchWallet(walletId uuid.UUID) (Wallet, int) {
-	var wallet Wallet
+func serchWallet(walletId uuid.UUID) (model.Wallet, int) {
+	var wallet model.Wallet
 	db.QueryRow("SELECT id, balance  FROM wallet WHERE id = $1", walletId).Scan(&wallet.ID, &wallet.Balance)
 	if wallet.ID == "" {
 		return wallet, http.StatusNotFound
