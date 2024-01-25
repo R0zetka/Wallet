@@ -4,7 +4,6 @@ import (
 	"Walet/internal/app/service"
 	"Walet/internal/model"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	uuid "github.com/satori/go.uuid"
 	"log"
@@ -28,7 +27,6 @@ func SendMoney(w http.ResponseWriter, r *http.Request) {
 	walletID := uuid.FromStringOrNil(params["walletId"])
 	var transaction model.Transaction
 	_ = json.NewDecoder(r.Body).Decode(&transaction)
-	fmt.Println("!!!")
 	walletFor, statusFor := service.SerchWallet(walletID)
 	if statusFor == http.StatusOK {
 		transaction.From = walletFor.ID

@@ -5,9 +5,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-/*
-var db *sql.DB
-*/
 func main() {
 
 	app.New()

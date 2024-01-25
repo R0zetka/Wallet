@@ -3,7 +3,6 @@ package service
 import (
 	"Walet/internal/model"
 	"database/sql"
-	"fmt"
 	uuid "github.com/satori/go.uuid"
 	"log"
 	"net/http"
@@ -27,8 +26,6 @@ func ConnectBD() *sql.DB {
 func SerchWallet(walletId uuid.UUID) (model.Wallet, int) {
 	var wallet model.Wallet
 	DB.QueryRow("SELECT id, balance  FROM wallet WHERE id = $1", walletId).Scan(&wallet.ID, &wallet.Balance)
-	fmt.Println("wa %s", walletId)
-	fmt.Println(wallet.ID)
 	if wallet.ID == "" {
 		return wallet, http.StatusNotFound
 	} else {
